@@ -27,7 +27,14 @@ namespace CosmosDb.Graph.Tests
 
             foreach (var propertyInfo in vertexStub.GetType().GetProperties())
             {
-                Assert.Contains($".property('{propertyInfo.Name}', '{propertyInfo.GetValue(vertexStub)}')", query);
+                if (propertyInfo.Name=="Bool") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub).ToString().ToLower()})", query);
+                else if(propertyInfo.Name == "Byte") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub)})", query);
+                else if(propertyInfo.Name == "Integer") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub)})", query);
+                else if(propertyInfo.Name == "Double") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub)})", query);
+                else if (propertyInfo.Name == "TimeStamp") {
+                    var dateTimeString = ((DateTime)propertyInfo.GetValue(vertexStub)).ToString("o");
+                    Assert.Contains($".property('{propertyInfo.Name}', '{dateTimeString}')", query);
+                } else Assert.Contains($".property('{propertyInfo.Name}', '{propertyInfo.GetValue(vertexStub)}')", query);
             }
         }
 
@@ -94,7 +101,15 @@ namespace CosmosDb.Graph.Tests
 
             foreach (var propertyInfo in vertexStub.GetType().GetProperties().Where(property => property.Name != "id"))
             {
-                Assert.Contains($".property('{propertyInfo.Name}', '{propertyInfo.GetValue(vertexStub)}')", query);
+                if(propertyInfo.Name == "Bool") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub).ToString().ToLower()})", query);
+                else if(propertyInfo.Name == "Byte") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub)})", query);
+                else if(propertyInfo.Name == "Integer") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub)})", query);
+                else if(propertyInfo.Name == "Double") Assert.Contains($".property('{propertyInfo.Name}', {propertyInfo.GetValue(vertexStub)})", query);
+                else if(propertyInfo.Name == "TimeStamp")
+                {
+                    var dateTimeString = ((DateTime)propertyInfo.GetValue(vertexStub)).ToString("o");
+                    Assert.Contains($".property('{propertyInfo.Name}', '{dateTimeString}')", query);
+                } else Assert.Contains($".property('{propertyInfo.Name}', '{propertyInfo.GetValue(vertexStub)}')", query);
             }
         }
 
@@ -174,7 +189,16 @@ namespace CosmosDb.Graph.Tests
 
             foreach (var property in edgeProperties)
             {
-                Assert.Contains($".property('{property.Name}', '{property.GetValue(edge)}')", query);
+                if(property.Name == "Bool") Assert.Contains($".property('{property.Name}', {property.GetValue(edge).ToString().ToLower()})", query);
+                else if(property.Name == "Byte") Assert.Contains($".property('{property.Name}', {property.GetValue(edge)})", query);
+                else if(property.Name == "Integer") Assert.Contains($".property('{property.Name}', {property.GetValue(edge)})", query);
+                else if(property.Name == "Double") Assert.Contains($".property('{property.Name}', {property.GetValue(edge)})", query);
+                else if(property.Name == "TimeStamp")
+                {
+                    var dateTimeString = ((DateTime)property.GetValue(edge)).ToString("o");
+                    Assert.Contains($".property('{property.Name}', '{dateTimeString}')", query);
+                } else Assert.Contains($".property('{property.Name}', '{property.GetValue(edge)}')", query);
+
             }
         }
 

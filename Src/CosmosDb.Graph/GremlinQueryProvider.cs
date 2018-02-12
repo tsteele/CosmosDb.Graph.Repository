@@ -18,14 +18,50 @@ namespace CosmosDb.Graph
 
             queryBuilder.Append($"g.addV('{objectType.Name}')");
 
-            foreach (var property in objectType.GetProperties())
-            {
-                queryBuilder.Append($".property('{property.Name}', '{property.GetValue(obj)}')");
+            foreach (var property in objectType.GetProperties()) {
+                AppendProperty(queryBuilder, property, obj);
             }
 
             return queryBuilder.ToString();
         }
-        
+
+        public void AppendProperty<T>(StringBuilder queryBuilder, PropertyInfo property, T obj) {
+            switch(property.PropertyType.Name)
+            {
+                case "String":
+                case "Char":
+                    queryBuilder.Append($".property('{property.Name}', '{property.GetValue(obj)}')");
+                    break;
+                case "Int16":
+                case "UInt16":
+                case "Int32":
+                case "UInt32":
+                case "Int64":
+                case "UInt64":
+                case "Decimal":
+                case "Double":
+                case "Single":
+                    queryBuilder.Append($".property('{property.Name}', {property.GetValue(obj)})");
+                    break;
+                case "Boolean":
+                    queryBuilder.Append($".property('{property.Name}', {property.GetValue(obj).ToString().ToLower()})");
+                    break;
+                case "DateTime":
+                    var dateTimeString = ((DateTime)property.GetValue(obj)).ToString("o");
+                    queryBuilder.Append($".property('{property.Name}', '{dateTimeString}')");
+                    break;
+                case "Byte":
+                case "SByte":
+                    queryBuilder.Append($".property('{property.Name}', {property.GetValue(obj)})");
+                    break;
+                default:
+                    Console.WriteLine($"Unknown type: {property.PropertyType.Name}");
+                    break;
+            }
+        }
+
+
+
         public string RemoveVertexQuery(string id)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
@@ -55,7 +91,7 @@ namespace CosmosDb.Graph
             foreach (var property in objectType.GetProperties())
             {
                 if (property.Name != "id")
-                    queryBuilder.Append($".property('{property.Name}', '{property.GetValue(obj)}')");
+                    AppendProperty(queryBuilder, property, obj);
             }
 
             return queryBuilder.ToString();
@@ -115,7 +151,8 @@ namespace CosmosDb.Graph
 
             foreach (var property in notKnownEdgePropertities)
             {
-                queryBuilder.Append($".property('{property.Name}', '{property.GetValue(edge)}')");
+                AppendProperty(queryBuilder, property, edge);
+                //queryBuilder.Append($".property('{property.Name}', '{property.GetValue(edge)}')");
             }
 
             queryBuilder.Append($".to(g.V('{edge.TargetId}'))");
@@ -198,10 +235,11 @@ namespace CosmosDb.Graph
 
             foreach (var property in notKnownEdgePropertities)
             {
-                queryBuilder.Append($".property('{property.Name}', '{property.GetValue(edge)}')");
+                AppendProperty(queryBuilder, property, edge);
             }
 
             return queryBuilder.ToString();
         }
+
     }
 }
