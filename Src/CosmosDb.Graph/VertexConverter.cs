@@ -18,8 +18,9 @@ namespace CosmosDb.Graph
             foreach (var vertexProperty in vertex.GetVertexProperties())
             {
                 var property = objectType.GetProperty(vertexProperty.Key);
-
-                property?.SetValue(obj, Convert.ChangeType(vertexProperty.Value, property.PropertyType));
+                var value = vertexProperty.Value;
+                if ("DateTime".Equals(property.PropertyType.Name)) value = value.ToString().Substring(value.ToString().IndexOf(":")+1);
+                property?.SetValue(obj, Convert.ChangeType(value, property.PropertyType));
             }
 
             return obj;

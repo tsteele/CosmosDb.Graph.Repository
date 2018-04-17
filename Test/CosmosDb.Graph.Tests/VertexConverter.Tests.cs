@@ -21,5 +21,7 @@ namespace CosmosDb.Graph.Tests
             /// As "Microsoft.Azure.Graphs.Elements.Vertex" is sealed and has an internal constructor, 
             /// a way of testing this method will have to be deviced as "ToObject" has a hard dependency on "Vertex".
         }
+
+
     }
 }

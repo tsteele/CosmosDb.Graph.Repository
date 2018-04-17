@@ -47,7 +47,7 @@ namespace CosmosDb.Graph
                     queryBuilder.Append($".property('{property.Name}', {property.GetValue(obj).ToString().ToLower()})");
                     break;
                 case "DateTime":
-                    var dateTimeString = ((DateTime)property.GetValue(obj)).ToString("o");
+                    var dateTimeString = "DT:"+((DateTime)property.GetValue(obj)).ToString("o");
                     queryBuilder.Append($".property('{property.Name}', '{dateTimeString}')");
                     break;
                 case "Byte":
