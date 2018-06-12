@@ -23,8 +23,9 @@ namespace CosmosDb.Graph
             foreach (var edgeProperty in edge.GetProperties())
             {
                 var property = objectType.GetProperty(edgeProperty.Key);
-
-                property?.SetValue(obj, Convert.ChangeType(edgeProperty.Value, property.PropertyType));
+                var value = edgeProperty.Value;
+                if ("DateTime".Equals(property.PropertyType.Name)) value = value.ToString().Substring(value.ToString().IndexOf(":") + 1);
+                property?.SetValue(obj, Convert.ChangeType(value, property.PropertyType));
             }
 
             return obj;

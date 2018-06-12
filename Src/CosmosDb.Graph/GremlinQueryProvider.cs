@@ -241,5 +241,19 @@ namespace CosmosDb.Graph
             return queryBuilder.ToString();
         }
 
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceId"></param>
+        /// <returns></returns>
+        public string GetEdgeWithSourceIdQuery2<T>(string sourceId) where T : EdgeBase {
+            if (string.IsNullOrEmpty(sourceId)) throw new ArgumentNullException(nameof(sourceId));
+
+            return $"g.V('{sourceId}').outE('{typeof(T).Name}')";
+        }
+
+
+
     }
 }

@@ -237,6 +237,22 @@ namespace CosmosDb.Graph
 
         #endregion
 
+
+
+
+        protected async Task<IEnumerable<T>> GetEdgesWithSourceId2<T>(string sourceId) where T : EdgeBase, new() {
+            if (string.IsNullOrEmpty(sourceId)) throw new ArgumentNullException(nameof(sourceId));
+
+            var edges = (await ExecuteGremlinQuery<Edge>(_gremlinQueryProvider.GetEdgeWithSourceIdQuery2<T>(sourceId))).ToArray();
+
+            return edges.Select(edge => _edgeConverter.ToObject<T>(edge));
+        }
+
+
+
+
+
+
         public void Dispose()
         {
             if (Client != null)
